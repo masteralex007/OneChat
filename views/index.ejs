@@ -13,6 +13,13 @@
             float: left;
             border: 1px solid rgb(187, 111, 12);   
         }
+        .error{
+            color: red;
+        }
+        .wishper{
+            color:rgba(199, 22, 223, 0.397);
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -78,13 +85,19 @@
             //the below code is used to send message(it binds the event handler to the message form)
             $messageForm.submit(function(e){
                 e.preventDefault();  //it prevents the gefault behaviour of the form as by default it will send the message and refreash the page
-                socket.emit('send message', $messageBox.val());
+                socket.emit('send message', $messageBox.val(), function(data){
+                    $chat.append('<span class="error">' + data + "</span><br/>");
+                });
                 $messageBox.val(''); //clears the message box value after sending the message
             });
 
             socket.on("new message", function(data){
                  $chat.append("<b>" + data.nick + ": </b>" + data.msg + "<br/>");
             });
+
+            socket.on('wishper', function(data){
+                $chat.append('<span class="wishper"><b>' + data.nick + ': </b>' + data.msg + "</span><br/>");
+            })
         });
     </script>
 </body>
